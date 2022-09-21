@@ -13,7 +13,7 @@ switch (Json.ReadJson(jsonString, tree)
 {
 case .Err(let err):
     Debug.WriteLine(err);
-	return .Err;
+    return .Err;
 case .Ok:
 }
 
@@ -23,11 +23,11 @@ case .Ok:
 if (tree.root case .Object(let objData))
 {
     if (rootObj.TryGetValue("answer", let truthBool)
-		&& truthBool case .Bool(let bool))
+        && truthBool case .Bool(let bool))
     {
-		Debug.WriteLine(bool ? "Yup" : "Nup");
-	}
-	else return .Err;
+        Debug.WriteLine(bool ? "Yup" : "Nup");
+    }
+    else return .Err;
 
     // ...
 }
@@ -64,8 +64,8 @@ let array = tree.MakeOwnedArray(8); // Already know required capacity!
 rootObj["someArrayThing"] = .Array(array);
 for (let i < 8)
 {
-	// Usual List adding...
-	array.Add(.Number(Math.Pow(i, i) / 10));
+    // Usual List adding...
+    array.Add(.Number(Math.Pow(i, i) / 10));
 }
 
 // WriteJson just returns void, so we can just:
