@@ -1,6 +1,6 @@
 # Json for Beef
 
-Read and write standard **JSON** in [BeefLang](https://github.com/beefytech/Beef) focused on speed and usability.
+Read and write standard **JSON** in [BeefLang](https://github.com/beefytech/Beef). Focused on speed and usability.
 
 ## Reading
 The whole structure is contained within ``JsonTree``. When the ``ReadJson`` call fails, ``tree`` is probably in an incomplete state, and might be partially invalid (e.g. ``.Object(let o)``'s ``o`` might be ``null``) but will always be correctly deletable. ``.Err(let err)`` will contain an error code, as well as column and line info.
