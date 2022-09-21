@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", json = "*"}
+
+[Project]
+Name = "Tests"
+TargetType = "BeefTest"
+StartupObject = "Tests.Program"
