@@ -144,14 +144,21 @@ class JsonBuilder
 		let inLen = inStr.Length;
 		var parsedStrLen = 0;
 		bool isEscaped = false;
+		int8 trailingBytes = 0;
 		while (parsedStrLen < inLen && (isEscaped || inStr[[Unchecked]parsedStrLen] != '"'))
 		{
 			let char = inStr[[Unchecked]parsedStrLen];
 			isEscaped = char == '\\' && !isEscaped;
 
-			if (((char >= (char8)0) && (char <= (char8)0x1F)) || ((char == (char8)0x7F))) // C0 ASCII control codes
-				return .Err(DoError(.Syntax_ControlCharInString));
+			if (trailingBytes == 0)
+			{
+				trailingBytes = UTF8.sTrailingBytesForUTF8[char];
 
+				if (char.IsControl)
+					return .Err(DoError(.Syntax_ControlCharInString));
+			}
+			else trailingBytes--;
+			
 			parsedStrLen++;
 		}
 
