@@ -137,7 +137,7 @@ class JsonBuilder
 		return .Ok;
 	}
 
-	Result<int, JsonError> StringLength()
+	Result<int, JsonError> StringByteLength()
 	{
 		// leading " already gone
 
@@ -149,7 +149,7 @@ class JsonBuilder
 			let char = inStr[[Unchecked]parsedStrLen];
 			isEscaped = char == '\\' && !isEscaped;
 
-			if (char.IsControl)
+			if (((char >= (char8)0) && (char <= (char8)0x1F)) || ((char == (char8)0x7F))) // C0 ASCII control codes
 				return .Err(DoError(.Syntax_ControlCharInString));
 
 			parsedStrLen++;
@@ -204,7 +204,7 @@ class JsonBuilder
 					return .Err(DoError(.Syntax_ExpectedKey));
 				inStr.RemoveFromStart(1);
 
-				let len = Try!(StringLength());
+				let len = Try!(StringByteLength());
 
 				let keyStrTemp = scope String(len);
 				StringProcess(len, keyStrTemp);
@@ -294,7 +294,7 @@ class JsonBuilder
 			currDepth--;
 		case '"':
 			inStr.RemoveFromStart(1);
-			let len = Try!(StringLength());
+			let len = Try!(StringByteLength());
 
 			let str = tree.MakeOwnedString(len);
 

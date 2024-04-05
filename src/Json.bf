@@ -110,38 +110,96 @@ class JsonTree
 
 static class JsonPrinter
 {
-	public static void Value(JsonElement el, String buffer)
+	static mixin Indent(String buffer, int indent)
 	{
+		for (int i < indent)
+			buffer.Append('\t');
+	}
+
+	public static void Value(JsonElement el, String buffer, bool pretty, int indent)
+	{
+		var indent;
 		switch (el)
 		{
 		case .Object(let object):
 			buffer.Append('{');
+			if (pretty)
+			{
+				indent++;
+				buffer.Append('\n');
+			}
+
 			if (object.Count > 0)
 			{
 				for (let pair in object)
 				{
+					if (pretty)
+						Indent!(buffer, indent);
+
 					buffer.Append('"');
 					buffer.Append(pair.key);
 					buffer.Append("\":");
 
-					Value(pair.value, buffer);
+					Value(pair.value, buffer, pretty, indent);
 
 					buffer.Append(',');
+					if (pretty)
+						buffer.Append('\n');
 				}
-				buffer.RemoveFromEnd(1);
+
+				if (!pretty)
+					buffer.RemoveFromEnd(1);
+				else
+				{
+					buffer.RemoveFromEnd(2);
+					buffer.Append('\n');
+				}
 			}
+
+			if (pretty)
+			{
+				indent--;
+				Indent!(buffer, indent);
+			}
+
 			buffer.Append('}');
 		case .Array(let array):
 			buffer.Append('[');
+			if (pretty)
+			{
+				indent++;
+				buffer.Append('\n');
+			}
+
 			if (array.Count > 0)
 			{
 				for (let value in array)
 				{
-					Value(value, buffer);
+					if (pretty)
+						Indent!(buffer, indent);
+
+					Value(value, buffer, pretty, indent);
+
 					buffer.Append(',');
+					if (pretty)
+						buffer.Append('\n');
 				}
-				buffer.RemoveFromEnd(1);
+
+				if (!pretty)
+					buffer.RemoveFromEnd(1);
+				else
+				{
+					buffer.RemoveFromEnd(2);
+					buffer.Append('\n');
+				}
 			}
+
+			if (pretty)
+			{
+				indent--;
+				Indent!(buffer, indent);
+			}
+
 			buffer.Append(']');
 		case .String(let string):
 			buffer.Append('"');
@@ -184,8 +242,8 @@ static class Json
 	}
 
 	[Inline]
-	public static void WriteJson(JsonTree tree, String jsonBuffer)
+	public static void WriteJson(JsonTree tree, String jsonBuffer, bool pretty = false)
 	{
-		JsonPrinter.Value(tree.root, jsonBuffer);
+		JsonPrinter.Value(tree.root, jsonBuffer, pretty, 0);
 	}
 }

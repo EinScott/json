@@ -17,6 +17,12 @@ static
 		}
 	}
 
+	static void Comptime()
+	{
+		[ConstEval]Reading();
+		[ConstEval]Writing();
+	}
+
 	[Test]
 	static void Reading()
 	{
@@ -104,6 +110,13 @@ static
 			String str = "\u{0001D11E}";
 			let tree = scope JsonTree();
 			Handle!(Json.ReadJson("\"\\uD834\\uDD1E\"", tree));
+			Test.Assert(tree.root.AsString() == str);
+		}
+
+		{
+			String str = "山手線";
+			let tree = scope JsonTree();
+			Handle!(Json.ReadJson("\"山手線\"", tree));
 			Test.Assert(tree.root.AsString() == str);
 		}
 
