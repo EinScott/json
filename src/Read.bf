@@ -150,7 +150,7 @@ class JsonBuilder
 			let char = inStr[[Unchecked]parsedStrLen];
 			isEscaped = char == '\\' && !isEscaped;
 
-			if (trailingBytes == 0)
+			if (trailingBytes == 0 || (uint8)char <= 127)
 			{
 				trailingBytes = UTF8.sTrailingBytesForUTF8[char];
 
